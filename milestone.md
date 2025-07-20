@@ -1,83 +1,60 @@
-# ChemFetch — Milestone Tracker
+# Milestone Roadmap — ChemFetch 🎯
+_Last updated: 2025-07-20_
 
-> *Last updated: 20 Jul 2025*
-
----
-
-## ✅ Phase 0 — Project Bootstrap (DONE)
-
-| Area | Deliverable |
-|------|-------------|
-| **Repo & Tooling** | Local `git init`, `.gitignore`, first commit, GitHub remote & push |
-| **Python Env** | Poetry 3.11 environment with editable package path (`src/chemfetch`) |
-| **Dependencies** | FastAPI, Uvicorn, Celery, Redis, SQLAlchemy/SQLModel, Alembic, dev‑tools (ruff, mypy, pytest, pre‑commit) |
-| **Project Layout** | `src/chemfetch/` package scaffold with `api/`, `tasks/`, etc. |
-| **FastAPI Skeleton** | `/health` endpoint returning `{status:"ok"}` & auto‑reload dev server |
-| **Celery Skeleton** | `celery_app` in `tasks/app.py`, Redis broker/back‑end, demo task `add(x,y)` |
-| **Local Validation** | ✔ Uvicorn health probe<br>✔ Celery worker registers `chemfetch.add` and returns correct result |
+| Phase | Scope | Status | Key Deliverables | Notes |
+|-------|-------|--------|------------------|-------|
+| **0 — Repo & Tooling** | GitHub repo, Poetry, Ruff, Black, Pre-commit, CI skeleton | ✅ _complete_ | Automated lint/format, pytest baseline |   |
+| **1 — Backend MVP** | FastAPI app, Celery worker skeleton, PostgreSQL models, health endpoint | 🟡 _in progress_ | `GET /health` ✔, DB models draft, SDS parse pipeline stubs | `/products/{gtin}` not implemented yet |
+| **1-b — Mobile Alpha (NEW)** | Expo Dev-Client (SDK 53, New Arch), barcode scan, register screen, API client | 🟢 _active_ | <br>• Dev Client APK (Android) built & installed<br>• CameraView scan with reticle & haptics<br>• Debounced nav → `/register/[id]`<br>• `react-query` + Zod runtime validation<br>• Loading / error UI<br>• `fetchProduct()` stub + env‐driven `API_BASE` | Waiting on live `/products/{gtin}` |
+| **2 — Product Lookup Service** | External API / web search, local cache, GS1 parsing | ⏳ _pending_ | Celery task chain, SQLite cache, `/products/{gtin}` returns JSON | kicks off after Phase 1 endpoint skeleton |
+| **3 — Auth & Multi-tenant** | JWT, user/org tables, role-based register | ⏳ | Secure endpoints, mobile login flow |   |
+| **4 — SDS Parsing Pipeline** | pdfplumber ➜ Camelot ➜ OCR fallback, section extraction, confidence scores | ⏳ | Celery stages 3-9, file storage, SDS model | depends on Phase 2 |
+| **5 — Mobile v1 (Beta)** | Offline cache, SDS viewer, register editing | ⏳ | EAS “preview” builds, OTA updates |   |
+| **6 — Production Release** | CI/CD, Play Store & App Store, monitoring | ⏳ | Stable channel, E2E tests |   |
 
 ---
 
-## 🔜 Phase 1 — Minimal SDS Flow (In Progress)
+## Detailed Task Checklist
 
-### API
-- [ ] **`POST /sds`** – upload PDF, save temp file, enqueue background parse task, return job ID
-- [ ] **`GET /sds/{id}`** – job status & parsed metadata JSON
+### ✅ Completed this sprint
+- **Expo Dev Client** built with New Architecture (SDK 53).
+- **Core libraries**: `expo-camera`, `expo-file-system`, `@tanstack/react-query`, `zod`, `expo-haptics`.
+- **Barcode scan screen**
+  - Live reticle + cross-hair overlay.
+  - Haptic vibration & “✓ Scanned” banner.
+  - Debounced navigation.
+- **Register screen v0**
+  - React-Query spinner / error handling.
+  - Zod-validated `Product` schema.
+  - Styles migrated to `StyleSheet.create`.
+- **API layer**
+  - `src/lib/api.ts` with env-configurable `EXPO_PUBLIC_API_BASE`.
+  - Timeout & friendly error messages.
+  - Temporary stub enabled when endpoint absent.
+- **Backend**
+  - `src/chemfetch/api/main.py` with `FastAPI(title="ChemFetch API")`.
+  - `/health` OK.
+  - Host binding `0.0.0.0` & CORS notes.
 
-### Background Tasks
-- [ ] `parse_sds_pdf` Celery task (pipeline Stage 1‑3)
-  - ingest → detect_layout → extract_text_tables
-- [ ] Store intermediate status in DB (`processing`, `failed`, `completed`)
+### 🔜 Up Next (Phase 1-b remaining)
+- [ ] Implement **stub `/products/{gtin}`** in FastAPI for initial data (returns mock JSON).
+- [ ] Swap mobile stub for real `fetchProduct` once above route live.
+- [ ] Add **open SDS PDF** button (WebView or external link).
+- [ ] Basic **local cache** (React-Query persistence or `expo-sqlite`).
+- [ ] EAS **preview build** (channel `preview`) for tester feedback.
 
-### Database
-- [ ] `SdsDocument` model (id, original_filename, status, created_at, updated_at, etc.)
-- [ ] Alembic **initial migration** & upgrade to head
-
-### Dev Experience / QA
-- [ ] Pytest fixture for Celery (`task_always_eager=True`) + unit test for `/sds` happy‑path
-- [ ] CI workflow step to spin up Redis service for tests
-
----
-
-## 📌 Phase 2 — Full Parsing & Normalisation
-
-| Component | Key Tasks |
-|-----------|-----------|
-| **Parsing Pipeline** | Implement remaining state‑machine stages: `camelot_stream_retry`, `ocr_tesseract`, optional `layoutlmv3_advanced`, `normalize_fields`, `confidence_scoring`, `persist_and_index` |
-| **Data Models** | Table & Section entities, per‑field confidence, fallback flags |
-| **Storage** | PDF blob retention policy, text + table JSON storage |
-| **Error Handling** | Structured error JSON (`{error_code, stage, attempted_paths}`) |
-
----
-
-## 🚀 Phase 3 — Production Hardening
-
-- Docker Compose service images & health‑checks
-- Configurable settings via `pydantic‑settings` & `.env`
-- Structured JSON logging with correlation IDs
-- Pre‑commit formatting & lint enforcement in CI
-- Swagger/OpenAPI docs polish
-- Metrics collection (parse_time_ms, ocr_fallback_rate, etc.)
+### 🚧 Blockers / Decisions
+- Choose external product/SDS data source or build manual vendor mapping.
+- Finalise DB schema for `product` & `register_entry` before Phase 2 task chain.
 
 ---
 
-## 🛣 Phase 4 — Stretch Goals
+**How to update**
 
-- Front‑end dashboard (React or Streamlit) for upload & document browser
-- LayoutLMv3 ML upgrade gated behind metrics
-- Role‑based auth (FastAPI Users / JWT)
-- S3 / Azure Blob storage abstraction for SDS PDFs
-- Horizontal scaling (Celery + Flower monitoring, Kubernetes)
-
----
-
-### Legend
-- **✅ Done** — implemented & validated
-- **🔜 Next up** — current sprint focus
-- **📌 Planned** — defined but not started
-- **🚀 Stretch** — nice‑to‑have / future capability
-
----
-
-*Feel free to check items off or re‑order as priorities shift.*
-
+```bash
+# overwrite file
+nano MILESTONE.md   # or your editor of choice
+# commit
+git add MILESTONE.md
+git commit -m "docs: update milestone after mobile alpha progress"
+git push
