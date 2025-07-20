@@ -9,15 +9,23 @@ import {
   StyleSheet,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { fetchProduct } from "../../src/lib/api";
 
 export default function RegisterScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProduct(id),
   });
+
+  useEffect(() => {
+    if (data === null) {
+      const t = setInterval(() => refetch(), 2000);
+      return () => clearInterval(t);
+    }
+  }, [data, refetch]);
 
   if (isLoading) {
     return (
@@ -32,6 +40,15 @@ export default function RegisterScreen() {
     return (
       <View style={styles.center}>
         <Text style={{ color: "red" }}>{`${error}`}</Text>
+      </View>
+    );
+  }
+
+  if (data === null) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+        <Text style={{ marginTop: 12 }}>Fetching SDS…</Text>
       </View>
     );
   }
