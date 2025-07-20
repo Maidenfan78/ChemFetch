@@ -5,7 +5,10 @@ celery_app = Celery(
     "chemfetch",
     broker="redis://localhost:6379/0",
     backend="redis://localhost:6379/1",
-    include=["chemfetch.tasks.demo"],  # 👈 Celery will import this on startup
+    include=[
+        "chemfetch.tasks.demo",
+        "chemfetch.tasks.fetch_sds",
+    ],  # 👈 Celery will import this on startup
 )
 
 # Optional: still allow later autodiscovery if you like
