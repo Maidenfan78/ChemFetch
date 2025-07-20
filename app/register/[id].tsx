@@ -1,6 +1,13 @@
 // filepath: app/(main)/register/[id].tsx
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, ActivityIndicator, Pressable, Linking } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Pressable,
+  Linking,
+  StyleSheet,
+} from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProduct } from "../../src/lib/api";
 
@@ -45,7 +52,7 @@ export default function RegisterScreen() {
       {data.sdsUrl && (
         <Pressable
           style={styles.button}
-          onPress={() => Linking.openURL(data.sdsUrl)}
+          onPress={() => Linking.openURL(data.sdsUrl!)}
         >
           <Text style={styles.buttonText}>Open SDS PDF</Text>
         </Pressable>
@@ -54,7 +61,7 @@ export default function RegisterScreen() {
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   center: {
     flex: 1,
     alignItems: "center",
@@ -70,4 +77,4 @@ const styles = {
     alignItems: "center",
   },
   buttonText: { color: "#fff", fontSize: 16 },
-};
+});
