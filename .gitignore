@@ -1,0 +1,119 @@
+# ChemFetch combined Python + Node/Expo ignore
+
+/dist
+*.DS_Store
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environments
+.env
+.env.*
+!.env.example
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Packaging / installers
+pip-log.txt
+pip-delete-this-directory.txt
+*.manifest
+*.spec
+
+# Test / coverage / quality
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+cython_debug/
+.pyright/
+
+# --- Node / TypeScript / Expo ---
+node_modules/
+.expo/
+.expo-shared/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+
+# Mobile build creds (keep elsewhere ideally)
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.ipa
+*.apk
+
+# --- Logs / runtime ---
+logs/
+*.log
+pg.txt
+
+# --- Framework / project specific ---
+instance/
+.webassets-cache
+.scrapy
+docs/_build/
+.pybuilder/
+target/
+
+# --- Data / DB (prefer migrations over raw dumps) ---
+db.sqlite3
+db.sqlite3-journal
+*.sql
+*.dump
+
+# --- Jupyter / notebooks ---
+.ipynb_checkpoints
+
+# --- Editor / IDE ---
+.vscode/
+.idea/
+*.swp
+*.code-workspace
+
+# --- OS / misc ---
+.DS_Store
+Thumbs.db
+
+# --- Scratch / temp (optional) ---
+scratch/
+tmp/
+*.tmp
