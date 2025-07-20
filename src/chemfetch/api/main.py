@@ -5,5 +5,5 @@ app = FastAPI(title="ChemFetch API")
 
 
 @app.get("/health", tags=["utils"])
-async def health():
+async def health() -> dict[str, str]:
     return {"status": "ok"}
