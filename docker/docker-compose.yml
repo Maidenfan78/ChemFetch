@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  api:
+    build: ..
+    command: uvicorn chemfetch.api.main:app --host 0.0.0.0 --port 8000
+    volumes: ["../:/app"]
+    env_file: ../.env
+    depends_on: [db, redis]
+  worker:
+    build: ..
+    command: celery -A chemfetch.tasks.app worker -l info
+    volumes: ["../:/app"]
+    env_file: ../.env
+    depends_on: [db, redis]
+  beat:
+    build: ..
+    command: celery -A chemfetch.tasks.app beat -l info
+    volumes: ["../:/app"]
+    env_file: ../.env
+    depends_on: [db, redis]
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: chemfetch
+      POSTGRES_PASSWORD: chemfetch
+      POSTGRES_DB: chemfetch
+    ports: ["5432:5432"]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
