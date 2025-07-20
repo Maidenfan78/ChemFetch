@@ -10,7 +10,6 @@
 │   └── splash-icon.png
 ├── docker
 │   └── docker-compose.yml
-├── index.ts
 ├── milestone.md
 ├── mypy.ini
 ├── package-lock.json
