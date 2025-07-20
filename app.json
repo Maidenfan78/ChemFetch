@@ -8,20 +8,17 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Scan product barcodes to fetch Safety Data Sheets (SDS)."
       }
     },
-
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -29,25 +26,38 @@
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "CAMERA"                      
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.maidenfan.Chemfetch"
     },
-
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "plugins": [
       "expo-router",
-      ["expo-camera", { "cameraPermission": "Allow Chemfetch to scan barcodes" }]
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Chemfetch to scan barcodes"
+        }
+      ]
     ],
-
     "extra": {
       "router": {},
       "eas": {
         "projectId": "48d4e464-5c91-48d3-b359-17d0213417fe"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/48d4e464-5c91-48d3-b359-17d0213417fe"
     }
   }
 }

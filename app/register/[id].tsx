@@ -1,27 +1,73 @@
-import { Stack, useLocalSearchParams } from "expo-router";
-import { View, Text } from "react-native";
+// filepath: app/(main)/register/[id].tsx
+import { useLocalSearchParams } from "expo-router";
+import { View, Text, ActivityIndicator, Pressable, Linking } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProduct  } from "../../src/lib/api"; // see Step 3
+import { fetchProduct } from "../../src/lib/api";
 
-export default function Register() {
-  const { id } = useLocalSearchParams<{ id: string }>();   // ← barcode value
+export default function RegisterScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["product", id],
-    queryFn: () => fetchProduct(id),    // back-end or mock
-    placeholderData: () => null,        // until API is ready
+    queryFn: () => fetchProduct(id),
   });
 
-  if (isLoading) return <Text>Loading…</Text>;
-  if (error)     return <Text>Error: {`${error}`}</Text>;
-  if (!data)     return <Text>No product found.</Text>;
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+        <Text style={{ marginTop: 12 }}>Looking up product…</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={{ color: "red" }}>{`${error}`}</Text>
+      </View>
+    );
+  }
+
+  if (!data) return null;
 
   return (
     <View style={{ padding: 16 }}>
-      <Text style={{ fontSize: 22, fontWeight: "600" }}>{data.name}</Text>
-      <Text>Vendor: {data.vendor}</Text>
-      <Text>Last SDS revision: {data.lastRevision}</Text>
-      {/* add buttons: Download SDS, Add to Register, etc. */}
+      <Text style={styles.title}>{data.name}</Text>
+      <Text style={styles.label}>GTIN: {data.gtin}</Text>
+      {data.vendor && <Text style={styles.label}>Vendor: {data.vendor}</Text>}
+      {data.lastRevision && (
+        <Text style={styles.label}>
+          Last SDS revision: {data.lastRevision}
+        </Text>
+      )}
+
+      {data.sdsUrl && (
+        <Pressable
+          style={styles.button}
+          onPress={() => Linking.openURL(data.sdsUrl)}
+        >
+          <Text style={styles.buttonText}>Open SDS PDF</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
+
+const styles = {
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: { fontSize: 22, fontWeight: "600", marginBottom: 8 },
+  label: { fontSize: 16, marginBottom: 4 },
+  button: {
+    marginTop: 20,
+    backgroundColor: "#007aff",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: { color: "#fff", fontSize: 16 },
+};
