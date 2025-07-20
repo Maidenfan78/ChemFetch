@@ -2,45 +2,44 @@
 name = "chemfetch"
 version = "0.1.0"
 description = "Automated SDS register"
-authors = [
-    { name = "Sav", email = "maidenfan78@gmail.com" }
-]
+authors = [{ name = "Sav", email = "maidenfan78@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
+
+# PEP 508 specifiers don’t need parentheses; use the standard form
 dependencies = [
-    "fastapi (>=0.116.1,<0.117.0)",
-    "uvicorn[standard] (>=0.35.0,<0.36.0)",
-    "sqlalchemy (==2.*)",
-    "alembic (>=1.16.4,<2.0.0)",
-    "psycopg2-binary (>=2.9.10,<3.0.0)",
-    "pydantic (>=2.11.7,<3.0.0)",
-    "python-dotenv (>=1.1.1,<2.0.0)",
-    "httpx (>=0.28.1,<0.29.0)",
-    "celery (>=5.5.3,<6.0.0)",
-    "redis (>=6.2.0,<7.0.0)",
-    "sqlmodel (>=0.0.24,<0.0.25)",
-    "pydantic-settings (>=2.10.1,<3.0.0)",
-    "python-multipart (>=0.0.20,<0.0.21)",
-    "psycopg[binary] (>=3.2.9,<4.0.0)"
+  "fastapi>=0.116.1,<0.117.0",
+  "uvicorn[standard]>=0.35.0,<0.36.0",
+  "sqlalchemy>=2.0.0,<3.0.0",         # ← no ‘==2.*’
+  "alembic>=1.16.4,<2.0.0",
+  "psycopg2-binary>=2.9.10,<3.0.0",
+  "pydantic>=2.11.7,<3.0.0",
+  "python-dotenv>=1.1.1,<2.0.0",
+  "httpx>=0.28.1,<0.29.0",
+  "celery>=5.5.3,<6.0.0",
+  "redis>=4.0.0,<6.0.0",              # redis-py 5 is latest; 6.x doesn’t exist yet
+  "sqlmodel>=0.0.24,<0.0.25",
+  "pydantic-settings>=2.1,<3.0",
+  "python-multipart>=0.0.5,<0.0.6",
+  # choose one psycopg driver; here we already have psycopg2-binary above
 ]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-# Add this section:
+# Tell Poetry where the source lives
 [tool.poetry]
 packages = [{ include = "chemfetch", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+ruff = "^0.4.0"
+mypy = "^1.10.0"
+pytest = "^8.4.1"
+pytest-asyncio = "^0.23.6"
+pre-commit = "^4.2.0"
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-
-[tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
-ruff = "^0.12.4"
-mypy = "^1.17.0"
-pytest = "^8.4.1"
-pytest-asyncio = "^1.1.0"
-httpx = "^0.28.1"
-pre-commit = "^4.2.0"
